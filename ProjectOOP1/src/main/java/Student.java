@@ -23,11 +23,10 @@ public class Student {
                 int bookId = rs.getInt("id");
 
                 if (isAvailable) {
-                    // Proceed to borrow the book
                     try (PreparedStatement borrowStmt = connection.prepareStatement(borrowBookQuery);
                          PreparedStatement updateStmt = connection.prepareStatement(updateBookAvailabilityQuery)) {
 
-                        connection.setAutoCommit(false); // Start transaction
+                        connection.setAutoCommit(false); 
 
                         borrowStmt.setInt(1, bookId);
                         borrowStmt.setInt(2, user.getId());
@@ -79,7 +78,7 @@ public class Student {
                 try (PreparedStatement updateBorrowStmt = connection.prepareStatement(updateBorrowedBookQuery);
                      PreparedStatement updateBookStmt = connection.prepareStatement(updateBookAvailabilityQuery)) {
 
-                    connection.setAutoCommit(false); // Start transaction
+                    connection.setAutoCommit(false); 
 
                     updateBorrowStmt.setInt(1, borrowedBookId);
                     updateBorrowStmt.executeUpdate();
@@ -125,7 +124,7 @@ public class Student {
                         rs.getString("author"),
                         rs.getString("code"),
                         rs.getTimestamp("borrow_date"),
-                        user.getUsername() // Borrower's username
+                        user.getUsername() 
                 );
                 borrowedBooks.add(borrowedBook);
             }
