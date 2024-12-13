@@ -10,24 +10,24 @@ public class Course {
     private Employee prof;
 
 
-    public Course(String courseName, String courseID) { // Constructor for main.java.Course
+    public Course(String courseName, String courseID) { 
         this.courseName = courseName;
         this.courseID = courseID;
     }
 
-    public String getCourseName() { // Getter for course name
+    public String getCourseName() { 
         return courseName;
     }
 
-    public void setCourseName(String courseName) { // Setter for course name
+    public void setCourseName(String courseName) { 
         this.courseName = courseName;
     }
 
-    public String getCourseID() { // Getter for course code
+    public String getCourseID() { 
         return courseID;
     }
 
-    public void setCourseID(String courseID) { // Setter for course code
+    public void setCourseID(String courseID) { 
         this.courseID = courseID;
     }
 }
