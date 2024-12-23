@@ -33,7 +33,6 @@ public class Student {
     }
 
     public boolean registerForCourse(String studentUsername, String courseNameOrCode, String professorUsername) {
-        // First, verify that the course exists with the given name or code and professor username
         String findCourseQuery = "SELECT * FROM courses WHERE (course_name = ? OR course_code = ?) AND professor_username = ? LIMIT 1";
 
         try (Connection connection = DBConnection.getConnection();
@@ -49,13 +48,11 @@ public class Student {
                 String courseName = rs.getString("course_name");
                 String courseCode = rs.getString("course_code");
 
-                // Check if the student is already registered for this course
                 if (isStudentRegistered(connection, studentUsername, courseName, courseCode, professorUsername)) {
                     System.out.println("You are already registered for this course.");
                     return false;
                 }
 
-                // Register the student for the course
                 String registerQuery = "INSERT INTO student_courses (student_username, student_registered_course_name, registered_course_code, professor_username) VALUES (?, ?, ?, ?)";
 
                 try (PreparedStatement registerStmt = connection.prepareStatement(registerQuery)) {
@@ -261,12 +258,12 @@ public class Student {
             return;
         }
 
-        // Display header
+        
         System.out.printf("%-12s | %-30s | %-7s | %-14s | %-6s | %-10s%n",
                 "Course Code", "Course Name", "Credits", "Overall Points", "Grade", "GPA Points");
         System.out.println("-----------------------------------------------------------------------------------------------");
 
-        // Display each transcript entry
+       
         for (Transcript transcript : transcriptList) {
             System.out.printf("%-12s | %-30s | %-7d | %-14s | %-6s | %-10s%n",
                     transcript.getCourseCode(),
@@ -277,7 +274,7 @@ public class Student {
                     transcript.getGpaPoints() != null ? String.format("%.2f", transcript.getGpaPoints()) : "N/A");
         }
 
-        // Optionally, calculate and display GPA
+        
         double totalGpaPoints = 0.0;
         int totalCredits = 0;
         for (Transcript transcript : transcriptList) {
