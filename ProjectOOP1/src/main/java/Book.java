@@ -11,7 +11,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.code = code;
-        this.available = true; // Default to available
+        this.available = true; 
     }
 
     // for existing books
