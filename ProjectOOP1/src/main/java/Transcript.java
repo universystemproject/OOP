@@ -6,7 +6,7 @@ public class Transcript {
     private String gradeLetter;
     private Double gpaPoints;
 
-    // Constructor
+    
     public Transcript(String courseCode, String courseName, int credits, Double overallPoints, String gradeLetter, Double gpaPoints) {
         this.courseCode = courseCode;
         this.courseName = courseName;
@@ -16,7 +16,7 @@ public class Transcript {
         this.gpaPoints = gpaPoints;
     }
 
-    // Getters
+   
     public String getCourseCode() {
         return courseCode;
     }
