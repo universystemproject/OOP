@@ -174,7 +174,7 @@ public class Mark {
 
     private Double calculateOverallPoints(Double firstAttestation, Double secondAttestation, Double finalExam) {
         if (firstAttestation == null || secondAttestation == null || finalExam == null) {
-            return null; // Cannot calculate overall points without all components
+            return null; 
         }
         double weightFirst = 0.20;
         double weightSecond = 0.30;
@@ -186,7 +186,7 @@ public class Mark {
 
     private String determineGradeLetter(Double overallPoints) {
         if (overallPoints == null) {
-            return "N/A"; // Grade not available
+            return "N/A"; 
         }
 
         if (overallPoints >= 95.0) return "A";
@@ -202,12 +202,7 @@ public class Mark {
         return "F";
     }
 
-    /**
-     * Maps the letter grade to GPA points.
-     *
-     * @param gradeLetter The letter grade to be mapped.
-     * @return The corresponding GPA points.
-     */
+    
     private Double mapGradeToGPA(String gradeLetter) {
         switch (gradeLetter) {
             case "A": return 4.0;
@@ -221,7 +216,7 @@ public class Mark {
             case "D+": return 1.33;
             case "D": return 1.0;
             case "F": return 0.0;
-            default: return null; // For "N/A" or undefined grades
+            default: return null; 
         }
     }
 }
