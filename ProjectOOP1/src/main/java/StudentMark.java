@@ -5,7 +5,6 @@ public class StudentMark {
     private Double secondAttestation;
     private Double finalExam;
 
-    // Constructor
     public StudentMark(String courseName, String courseCode, Double firstAttestation, Double secondAttestation, Double finalExam) {
         this.courseName = courseName;
         this.courseCode = courseCode;
@@ -14,7 +13,6 @@ public class StudentMark {
         this.finalExam = finalExam;
     }
 
-    // Getters
     public String getCourseName() {
         return courseName;
     }
