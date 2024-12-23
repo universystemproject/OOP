@@ -9,6 +9,7 @@ public class Main {
         Admin admin = new Admin();
         Librarian librarian = new Librarian();
         Student student = new Student();
+        Teacher teacher = new Teacher();
 
         while (true) {
             if (!authService.isLoggedIn()) {
@@ -72,7 +73,7 @@ public class Main {
                     adminMenu(scanner, admin, authService);
                 }
                 else if (role.equalsIgnoreCase("Teacher")) {
-                    teacherMenu(scanner, authService);
+                    teacherMenu(scanner, teacher, authService, currentUser);
                 }
                 else if (role.equalsIgnoreCase("Librarian")) {
                     librarianMenu(scanner, librarian, authService);
@@ -87,64 +88,116 @@ public class Main {
 
 
     private static void studentMenu(Scanner scanner, Librarian librarian, Student student, AuthService authService, User currentUser) {
-        System.out.println("1. View Available Books");
-        System.out.println("2. Borrow Book");
-        System.out.println("3. Return Book");
-        System.out.println("4. View Borrowed Books");
-        System.out.println("5. Logout");
-        System.out.print("Enter choice: ");
-        int choice = 0;
+        while (true) {
 
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println("Invalid input. Please enter a number between 1 and 5.");
-            scanner.nextLine();
-            return;
-        }
+            System.out.println("1. View Courses");
+            System.out.println("2. Register For Courses");
+            System.out.println("3. View Marks");
+            System.out.println("4. View Transcript");
+            System.out.println("5. View Available Books");
+            System.out.println("6. Borrow Book");
+            System.out.println("7. Return Book");
+            System.out.println("8. View Borrowed Books");
+            System.out.println("9. Logout");
 
-        switch (choice) {
-            case 1 -> {
-                List<Book> availableBooks = librarian.getAllBooks();
-                System.out.println("\nAvailable Books:");
-                boolean anyAvailable = false;
-                for (Book book : availableBooks) {
-                    if (book.isAvailable()) {
-                        System.out.println(book);
-                        anyAvailable = true;
+            System.out.print("Enter choice: ");
+            int choice = 0;
+
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 9.");
+                scanner.nextLine();
+                return;
+            }
+
+            switch (choice) {
+                case 1 -> {
+                    List<Course> courses = student.viewCourses();
+                    System.out.println("\n--- Available Courses ---");
+                    if (courses.isEmpty()) {
+                        System.out.println("No courses are currently available.");
+                    } else {
+                        for (Course course : courses) {
+                            System.out.println(course);
+                        }
                     }
                 }
-                if (!anyAvailable) {
-                    System.out.println("No books are currently available.");
-                }
-            }
-            case 2 -> {
-                System.out.print("Enter code of the book to borrow: ");
-                String code = scanner.nextLine();
-                student.borrowBook(currentUser, code);
-            }
-            case 3 -> {
-                System.out.print("Enter code of the book to return: ");
-                String code = scanner.nextLine();
-                student.returnBook(currentUser, code);
-            }
-            case 4 -> {
-                List<BorrowedBook> borrowedBooks = student.getBorrowedBooks(currentUser);
-                System.out.println("\nYour Borrowed Books:");
-                if (borrowedBooks.isEmpty()) {
-                    System.out.println("You have not borrowed any books.");
-                } else {
-                    for (BorrowedBook bb : borrowedBooks) {
-                        System.out.println(bb);
+                case 2 -> {
+                    System.out.println("\n--- Register For a Course ---");
+                    System.out.print("Enter Course Name or Course Code: ");
+                    String courseNameOrCode = scanner.nextLine().trim();
+
+                    if (courseNameOrCode.isEmpty()) {
+                        System.out.println("Course name or code cannot be empty.");
+                        continue;
+                    }
+
+                    System.out.print("Enter Professor's Username: ");
+                    String professorUsername = scanner.nextLine().trim();
+
+                    if (professorUsername.isEmpty()) {
+                        System.out.println("Professor's username cannot be empty.");
+                        continue;
+                    }
+
+                    boolean registered = student.registerForCourse(currentUser.getUsername(), courseNameOrCode, professorUsername);
+                    if (registered) {
                     }
                 }
+                case 3 -> {
+                    student.viewMarks(currentUser.getUsername());
+                }
+                case 4 -> {
+                    student.viewTranscript(currentUser.getUsername());
+                }
+                case 5 -> {
+                    List<Book> availableBooks = librarian.getAllBooks();
+                    System.out.println("\nAvailable Books:");
+                    boolean anyAvailable = false;
+                    for (Book book : availableBooks) {
+                        if (book.isAvailable()) {
+                            System.out.println(book);
+                            anyAvailable = true;
+                        }
+                    }
+                    if (!anyAvailable) {
+                        System.out.println("No books are currently available.");
+                    }
+                }
+                case 6 -> {
+                    System.out.print("Enter code of the book to borrow: ");
+                    String code = scanner.nextLine();
+                    student.borrowBook(currentUser, code);
+                }
+                case 7 -> {
+                    System.out.print("Enter code of the book to return: ");
+                    String code = scanner.nextLine();
+                    student.returnBook(currentUser, code);
+                }
+                case 8 -> {
+                    List<BorrowedBook> borrowedBooks = student.getBorrowedBooks(currentUser);
+                    System.out.println("\nYour Borrowed Books:");
+                    if (borrowedBooks.isEmpty()) {
+                        System.out.println("You have not borrowed any books.");
+                    } else {
+                        for (BorrowedBook bb : borrowedBooks) {
+                            System.out.println(bb);
+                        }
+                    }
+                }
+                case 9 -> {
+                    authService.logout();
+                    System.out.println("Logged out successfully.");
+
+                }
+                default -> System.out.println("Invalid choice.");
             }
-            case 5 -> {
-                authService.logout();
-                System.out.println("Logged out successfully.");
+
+            if (!authService.isLoggedIn()) {
+                break;
             }
-            default -> System.out.println("Invalid choice.");
         }
     }
 
@@ -240,32 +293,148 @@ public class Main {
     }
 
 
-    private static void teacherMenu(Scanner scanner, AuthService authService) {
-        System.out.println("1. View My Courses");
-        System.out.println("2. Enter Grades");
-        System.out.println("3. Logout");
-        System.out.print("Enter choice: ");
-        int choice = 0;
+    private static void teacherMenu(Scanner scanner, Teacher teacher, AuthService authService, User currentUser) {
 
+        StudentChecker studentChecker = new StudentChecker(teacher);
 
-        try {
-            choice = scanner.nextInt();
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println("Invalid input. Please enter a number between 1 and 3.");
-            scanner.nextLine();
-            return;
-        }
+        while (true) {
+            System.out.println("\n--- Teacher Menu ---");
+            System.out.println("1. View My Courses");
+            System.out.println("2. View My Students");
+            System.out.println("3. Put Marks");
+            System.out.println("4. Logout");
+            System.out.print("Enter choice: ");
+            int choice = 0;
 
-        switch (choice) {
-            case 1 -> System.out.println("Teacher viewing courses...");
-            case 2 -> System.out.println("Teacher entering grades...");
-            case 3 -> {
-                authService.logout();
-                System.out.println("Logged out successfully.");
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
             }
-            default -> System.out.println("Invalid choice.");
+            catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Teacher viewing courses...");
+                    List<Course> courses = teacher.viewMyCourses(currentUser.getUsername());
+                    System.out.println("\nTeacher courses: ");
+                    if(courses.isEmpty()) {
+                        System.out.println("You have no courses.");
+                    }
+                    else {
+                        for (Course course : courses) {
+                            System.out.println(course);
+                        }
+                    }
+                }
+                case 2 -> {
+                    System.out.println("Teacher viewing students...");
+                    List<StudentRegisteredCourse> students = teacher.viewMyStudents(currentUser.getUsername());
+                    System.out.println("\nTeacher students: ");
+                    if(students.isEmpty()) {
+                        System.out.println("You have no students.");
+                    }
+                    else {
+                        for (StudentRegisteredCourse course : students) {
+                            System.out.println(course);
+                        }
+                    }
+                }
+                case 3 -> {
+                    System.out.println("Teacher entering grades...");
+                    System.out.print("Enter student username: ");
+                    String studentUsername = scanner.nextLine().trim();
+
+                    System.out.print("Enter course name: ");
+                    String courseName = scanner.nextLine().trim();
+
+                    if (courseName.isEmpty()) {
+                        System.out.println("Course name cannot be empty.");
+                        continue;
+                    }
+
+                    System.out.print("Enter course code: ");
+                    String courseCode = scanner.nextLine().trim();
+
+                    if (courseCode.isEmpty()) {
+                        System.out.println("Course code cannot be empty.");
+                        continue;
+                    }
+
+
+
+                    boolean isAssociated = studentChecker.checkStudent(studentUsername, currentUser.getUsername(), courseName);
+                    if (!isAssociated) {
+                        System.out.println("You don't have this student in this course.");
+                        continue;
+                    }
+
+
+                    System.out.print("Enter mark type (1: First Attestation, 2: Second Attestation, 3: Final Exam): ");
+                    int markType;
+                    try {
+                        markType = scanner.nextInt();
+                        scanner.nextLine();
+                    }
+                    catch (Exception e) {
+                        System.out.println("Invalid input. Please enter a number between 1 and 3.");
+                        scanner.nextLine();
+                        continue;
+                    }
+
+                    if (markType < 1 || markType > 3) {
+                        System.out.println("Invalid mark type. Please enter 1, 2, or 3.");
+                        continue;
+                    }
+
+
+                    System.out.print("Enter grade for " + getMarkTypeName(markType) + ": ");
+                    Double mark = null;
+                    try {
+                        mark = scanner.nextDouble();
+                        scanner.nextLine();
+                    }
+                    catch (Exception e) {
+                        System.out.println("Invalid mark. Please enter a numerical value between 0 and 100.");
+                        scanner.nextLine();
+                        continue;
+                    }
+
+                    if (mark < 0.0 || mark > 100.0) {
+                        System.out.println("Invalid mark. Please enter a value between 0 and 100.");
+                        continue;
+                    }
+
+
+                    studentChecker.assignMark(studentUsername, courseName, markType, mark, courseCode);
+                }
+
+                case 4 -> {
+                    authService.logout();
+                    System.out.println("Logged out successfully.");
+
+                }
+                default -> System.out.println("Invalid choice. Please select a number between 1 and 5.");
+            }
+
+
+            if (!authService.isLoggedIn()) {
+                break;
+            }
         }
+    }
+
+
+    private static String getMarkTypeName(int markType) {
+        return switch (markType) {
+            case 1 -> "First Attestation";
+            case 2 -> "Second Attestation";
+            case 3 -> "Final Exam";
+            default -> "Unknown Mark Type";
+        };
     }
 
 
@@ -379,7 +548,6 @@ public class Main {
             default -> System.out.println("Invalid choice.");
         }
     }
-
 
     private static boolean isValidRole(String role) {
         return role.equalsIgnoreCase("Student") ||

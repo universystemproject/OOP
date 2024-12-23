@@ -8,7 +8,6 @@ import java.util.List;
 
 public class Admin {
 
-
     public void addUser(List<User> users) {
         String insertQuery = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
 

@@ -25,7 +25,8 @@ public class AuthService {
                         rs.getString("role")
                 );
                 return true;
-            } else {
+            }
+            else {
                 System.out.println("Invalid credentials or role.");
             }
         } catch (Exception e) {

@@ -6,13 +6,15 @@ public class Book {
     private String code;
     private boolean available;
 
+    // for new books
     public Book(String title, String author, String code) {
         this.title = title;
         this.author = author;
         this.code = code;
-        this.available = true; 
+        this.available = true; // Default to available
     }
 
+    // for existing books
     public Book(int id, String title, String author, String code, boolean available) {
         this.id = id;
         this.title = title;

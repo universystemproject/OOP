@@ -124,7 +124,7 @@ public class Librarian {
      */
     public List<Book> searchBooks(String keyword) {
         List<Book> books = new ArrayList<>();
-        String searchQuery = "SELECT * FROM books WHERE title ILIKE ? OR author ILIKE ?";
+        String searchQuery = "SELECT * FROM books WHERE title ILIKE ? OR author ILIKE ? OR code ILIKE ?";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(searchQuery)) {
@@ -132,6 +132,7 @@ public class Librarian {
             String searchPattern = "%" + keyword + "%";
             pstmt.setString(1, searchPattern);
             pstmt.setString(2, searchPattern);
+            pstmt.setString(3, searchPattern);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {

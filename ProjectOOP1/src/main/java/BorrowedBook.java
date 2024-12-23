@@ -3,9 +3,9 @@ import java.sql.Timestamp;
 public class BorrowedBook {
     private String title;
     private String author;
-    private String code; 
+    private String code; // Unique code for the book
     private Timestamp borrowDate;
-    private String username; 
+    private String username; // Borrower's username
 
     public BorrowedBook(String title, String author, String code, Timestamp borrowDate, String username) {
         if (title == null || author == null || code == null || borrowDate == null || username == null) {
